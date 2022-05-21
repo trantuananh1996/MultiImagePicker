@@ -13,7 +13,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -45,17 +44,16 @@ import net.yazeed44.imagepicker.data.model.ImageEntry;
 import net.yazeed44.imagepicker.library.BuildConfig;
 import net.yazeed44.imagepicker.library.R;
 import net.yazeed44.imagepicker.ui.album.AlbumsFragment;
-import net.yazeed44.imagepicker.ui.camera.CameraActivity;
 import net.yazeed44.imagepicker.ui.imagePreview.ImagePreviewActivity;
 import net.yazeed44.imagepicker.ui.photo.ImagesThumbnailFragment;
 import net.yazeed44.imagepicker.ui.photoPager.ImagesPagerFragment;
-import net.yazeed44.imagepicker.util.CameraSupport;
 import net.yazeed44.imagepicker.util.LocaleHelper;
 import net.yazeed44.imagepicker.util.MultiplePicker;
 import net.yazeed44.imagepicker.util.Picker;
 import net.yazeed44.imagepicker.util.SinglePicker;
 import net.yazeed44.imagepicker.util.UIUtil;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -66,7 +64,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 
@@ -785,7 +782,15 @@ public class PickerActivity extends AppCompatActivity {
             final int duration = mp.getDuration();
             mp.release();
             if (duration > (mPickOptions.videoLengthLimit)) {
-                Toast.makeText(this, getResources().getString(R.string.video_too_long).replace("$", String.valueOf(mPickOptions.videoLengthLimit / 1000)), Toast.LENGTH_SHORT).show();
+
+                String timeLimitStr = DurationFormatUtils.formatDuration(mPickOptions.videoLengthLimit, "m:ss");
+                String message = String.format(getResources().getString(R.string.video_too_long), timeLimitStr);
+
+                Toast.makeText(
+                        this,
+                        message,
+                        Toast.LENGTH_SHORT
+                ).show();
                 return; // Don't allow selection
             }
         }
