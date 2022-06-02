@@ -28,16 +28,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Created by yazeed44
- * on 6/14/15.
- */
 public class ImageEntry implements Parcelable {
-    public final int imageId;
-    public String path;
-    public final long dateAdded;
-    public boolean isPicked = false;
-    public boolean isVideo = false;
+    private final int imageId;
+    private String path;
+    private final long dateAdded;
+    private boolean isPicked = false;
+    private boolean isVideo = false;
 
     private int orientation = 0;
     private int maxDimen = 1152;
@@ -54,7 +50,78 @@ public class ImageEntry implements Parcelable {
     public int offset;
 
     private void logException(Throwable e) {
-//        e.printStackTrace();
+        e.printStackTrace();
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public ImageEntry setPath(String path) {
+        this.path = path;
+        return this;
+    }
+
+    public long getDateAdded() {
+        return dateAdded;
+    }
+
+    public boolean isPicked() {
+        return isPicked;
+    }
+
+    public ImageEntry setPicked(boolean picked) {
+        isPicked = picked;
+        return this;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public ImageEntry setVideo(boolean video) {
+        isVideo = video;
+        return this;
+    }
+
+    public ImageEntry setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        return this;
+    }
+
+    public boolean isUploaded() {
+        return uploaded;
+    }
+
+    public String getS3Url() {
+        return S3Url;
+    }
+
+    public ImageEntry setS3Url(String s3Url) {
+        S3Url = s3Url;
+        return this;
+    }
+
+    public String getGenId() {
+        return genId;
+    }
+
+    public ImageEntry setGenId(String genId) {
+        this.genId = genId;
+        return this;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public ImageEntry setOffset(int offset) {
+        this.offset = offset;
+        return this;
     }
 
     public ImageEntry(String path, Bitmap bitmap, Long dateAdded) {

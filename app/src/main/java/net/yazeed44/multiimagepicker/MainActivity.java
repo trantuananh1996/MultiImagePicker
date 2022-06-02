@@ -160,8 +160,7 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
         @Override
         public void onBindViewHolder(ImageSampleViewHolder holder, int position) {
-
-            final String path = mSelectedImages.get(position).path;
+            final String path = mSelectedImages.get(position).getPath();
             loadImage(path, holder.thumbnail);
         }
 
