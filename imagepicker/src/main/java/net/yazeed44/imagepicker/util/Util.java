@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.yazeed44.imagepicker.library.R;
 import net.yazeed44.imagepicker.data.model.AlbumEntry;
 import net.yazeed44.imagepicker.data.model.ImageEntry;
-import net.yazeed44.imagepicker.ui.PickerActivity;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -66,62 +65,6 @@ public final class Util {
     }
 
 
-    public static ArrayList<AlbumEntry> getAlbums(final Context context, final Picker pickOptions) {
-        final ArrayList<AlbumEntry> albumsSorted = new ArrayList<>();
-
-        final SparseArray<AlbumEntry> albums = new SparseArray<>();
-        AlbumEntry allPhotosAlbum;
-
-
-        Cursor imagesCursor = null;
-        Cursor videosCursor = null;
-        try {
-
-            imagesCursor = queryImages(context);
-
-            allPhotosAlbum = iterateCursor(context, imagesCursor, null, albumsSorted, albums, false);
-            if (pickOptions.videosEnabled) {
-
-                videosCursor = queryVideos(context);
-                iterateCursor(context, videosCursor, allPhotosAlbum, albumsSorted, albums, true);
-            }
-
-        } catch (Exception ex) {
-//            Log.e("getAlbums", ex.getMessage());
-        } finally {
-
-            closeCursors(imagesCursor, videosCursor);
-
-        }
-
-        setPickedFlagForPickedImages(albumsSorted);
-
-        for (final AlbumEntry album : albumsSorted) {
-            album.sortImagesByTimeDesc();
-        }
-//
-
-        Collections.sort(albumsSorted, new Comparator<AlbumEntry>() {
-            @Override
-            public int compare(AlbumEntry o1, AlbumEntry o2) {
-                if (o1 == null || o2 == null) return 1;
-                String a1Name = o1.name == null ? "" : unAccent(o1.name);
-                String a2Name = o2.name == null ? "" : unAccent(o2.name);
-                if (TextUtils.isEmpty(a1Name) || TextUtils.isEmpty(a2Name)) return 1;
-                int o1Id = a1Name.contains("IMG") ? Integer.MAX_VALUE : o1.id;
-                int o2Id = a2Name.contains("IMG") ? Integer.MAX_VALUE : o2.id;
-                return Integer.compare(o1Id, o2Id);
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                return false;
-            }
-        });
-
-        return albumsSorted;
-
-    }
 
     public static String unAccent(String s) {
         String temp = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -167,23 +110,6 @@ public final class Util {
                 , projectionVideos);
     }
 
-    private static void setPickedFlagForPickedImages(final ArrayList<AlbumEntry> albumsSorted) {
-        //Check all photos album
-        final AlbumEntry allPhotosAlbum = getAllPhotosAlbum(albumsSorted);
-
-        if (allPhotosAlbum == null) {
-            return;
-        }
-
-        if (!PickerActivity.sCheckedImages.isEmpty() && !allPhotosAlbum.imageList.isEmpty()) {
-
-            for (final ImageEntry checkedImage : PickerActivity.sCheckedImages) {
-                for (final ImageEntry imageEntry : allPhotosAlbum.imageList) {
-                    imageEntry.isPicked = imageEntry.equals(checkedImage);
-                }
-            }
-        }
-    }
 
     public static AlbumEntry getAllPhotosAlbum(final ArrayList<AlbumEntry> albumEntries) {
         for (final AlbumEntry albumEntry : albumEntries) {

@@ -58,36 +58,36 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
 
     public void onClickPickImageSingle(View view) {
-        Picker picker = new Picker.Builder(this, this)
-                .setLimitVideo(5)
-                .setLimitPhoto(5)
-                .setVideosEnabled(true)
+        Picker picker = new Picker.Builder(this)
+                .limitPhoto(5)
+                .limitVideo(5)
                 .build();
         picker.startActivity();
     }
 
     public void onClickPickImageMultipleWithLimit(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .setLimit(6)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .setLimit(6)
+//                .build()
+//                .startActivity();
+//    }
     }
 
     public void onPickImageMultipleInfinite(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .build()
+//                .startActivity();
 
     }
 
     public void onClickPickImageWithVideos(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .setVideosEnabled(true)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .setVideosEnabled(true)
+//                .build()
+//                .startActivity();
 
     }
 
