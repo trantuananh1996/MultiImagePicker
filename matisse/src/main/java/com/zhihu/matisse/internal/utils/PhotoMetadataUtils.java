@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public final class PhotoMetadataUtils {
@@ -127,6 +128,11 @@ public final class PhotoMetadataUtils {
     public static IncapableCause isAcceptable(Context context, Item item) {
         if (!isSelectableType(context, item)) {
             return new IncapableCause(context.getString(R.string.error_file_type));
+        }
+
+        if (item.isVideo() && item.duration > SelectionSpec.getInstance().maxDuration ){
+            DateTimeFormatter  dateTimeFormatter = DateTimeFormatter.ofPattern("mm ")
+            return new IncapableCause(context.getString(R.string.error_video_duration));
         }
 
         if (SelectionSpec.getInstance().filters != null) {

@@ -15,17 +15,19 @@
  */
 package com.zhihu.matisse.internal.ui;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Item;
@@ -33,6 +35,8 @@ import com.zhihu.matisse.internal.entity.SelectionSpec;
 import com.zhihu.matisse.internal.utils.PhotoMetadataUtils;
 import com.zhihu.matisse.listener.OnFragmentInteractionListener;
 
+import cn.jzvd.Jzvd;
+import cn.jzvd.JzvdStd;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 
@@ -40,6 +44,7 @@ public class PreviewItemFragment extends Fragment {
 
     private static final String ARGS_ITEM = "args_item";
     private OnFragmentInteractionListener mListener;
+    private JzvdStd videoPlayer;
 
     public static PreviewItemFragment newInstance(Item item) {
         PreviewItemFragment fragment = new PreviewItemFragment();
@@ -55,51 +60,54 @@ public class PreviewItemFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final Item item = getArguments().getParcelable(ARGS_ITEM);
         if (item == null) {
             return;
         }
 
-        View videoPlayButton = view.findViewById(R.id.video_play_button);
+        videoPlayer = view.findViewById(R.id.jz_player);
+        ImageViewTouch image = view.findViewById(R.id.image_view);
+
         if (item.isVideo()) {
-            videoPlayButton.setVisibility(View.VISIBLE);
-            videoPlayButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(item.uri, "video/*");
-                    try {
-                        startActivity(intent);
-                    } catch (ActivityNotFoundException e) {
-                        Toast.makeText(getContext(), R.string.error_no_video_activity, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            videoPlayer.setVisibility(View.VISIBLE);
+            image.setVisibility(View.GONE);
+            videoPlayer.setUp(getRealPathFromURI(getActivity(), item.uri), "");
+            Point size = PhotoMetadataUtils.getBitmapSize(item.getContentUri(), getActivity());
+            SelectionSpec.getInstance().imageEngine.loadImage(getActivity(), size.x, size.y, videoPlayer.posterImageView,
+                    item.getContentUri());
         } else {
-            videoPlayButton.setVisibility(View.GONE);
-        }
-
-        ImageViewTouch image = (ImageViewTouch) view.findViewById(R.id.image_view);
-        image.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-
-        image.setSingleTapListener(new ImageViewTouch.OnImageViewTouchSingleTapListener() {
-            @Override
-            public void onSingleTapConfirmed() {
+            videoPlayer.setVisibility(View.GONE);
+            videoPlayer.setVisibility(View.VISIBLE);
+            image.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            image.setSingleTapListener(() -> {
                 if (mListener != null) {
                     mListener.onClick();
                 }
-            }
-        });
+            });
 
-        Point size = PhotoMetadataUtils.getBitmapSize(item.getContentUri(), getActivity());
-        if (item.isGif()) {
-            SelectionSpec.getInstance().imageEngine.loadGifImage(getContext(), size.x, size.y, image,
-                    item.getContentUri());
-        } else {
-            SelectionSpec.getInstance().imageEngine.loadImage(getContext(), size.x, size.y, image,
-                    item.getContentUri());
+            Point size = PhotoMetadataUtils.getBitmapSize(item.getContentUri(), getActivity());
+            if (item.isGif()) {
+                SelectionSpec.getInstance().imageEngine.loadGifImage(getContext(), size.x, size.y, image,
+                        item.getContentUri());
+            } else {
+                SelectionSpec.getInstance().imageEngine.loadImage(getContext(), size.x, size.y, image,
+                        item.getContentUri());
+            }
+        }
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) cursor.close();
         }
     }
 
@@ -119,6 +127,12 @@ public class PreviewItemFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onPause() {
+        Jzvd.releaseAllVideos();
+        super.onPause();
     }
 
     @Override

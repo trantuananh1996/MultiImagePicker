@@ -293,7 +293,7 @@ public class AlbumMediaAdapter extends
         CaptureViewHolder(View itemView) {
             super(itemView);
 
-            mHint = (TextView) itemView.findViewById(R.id.hint);
+            mHint = itemView.findViewById(R.id.hint);
         }
     }
 

@@ -18,7 +18,10 @@ package com.zhihu.matisse.internal.model;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.IncapableCause;
@@ -32,6 +35,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import java8.util.stream.StreamSupport;
 
 @SuppressWarnings("unused")
 public class SelectedItemCollection {
@@ -167,9 +172,19 @@ public class SelectedItemCollection {
     }
 
     public IncapableCause isAcceptable(Item item) {
-        if (maxSelectableReached()) {
+        if (maxSelectableReached(item)) {
             int maxSelectable = currentMaxSelectable();
-            String cause;
+            String cause = "";
+
+            SelectionSpec selectionSpec = SelectionSpec.getInstance();
+
+            if (item.isImage())
+                cause = "Quá giới hạn ảnh " + selectionSpec.maxImageSelectable;
+
+            if (item.isVideo()){
+                cause = "Quá gới hạn video " + selectionSpec.maxVideoSelectable;
+            }
+
 
 //            try {
 //                cause = mContext.getResources().getQuantityString(
@@ -178,10 +193,10 @@ public class SelectedItemCollection {
 //                        maxSelectable
 //                );
 //            } catch (Resources.NotFoundException | NoClassDefFoundError e) {
-                cause = mContext.getString(
-                        R.string.error_over_count,
-                        maxSelectable
-                );
+//            cause = mContext.getString(
+//                    R.string.error_over_count,
+//                    maxSelectable
+//            );
 //            }
 
             return new IncapableCause(cause);
@@ -190,6 +205,19 @@ public class SelectedItemCollection {
         }
 
         return PhotoMetadataUtils.isAcceptable(mContext, item);
+    }
+
+    private boolean maxSelectableReached(Item item) {
+        int max = 0;
+        SelectionSpec spec = SelectionSpec.getInstance();
+
+        if (item.isVideo()) {
+            max = spec.maxVideoSelectable;
+            return StreamSupport.stream(mItems).filter(Item::isVideo).count() == max;
+        } else {
+            max = spec.maxImageSelectable;
+            return StreamSupport.stream(mItems).filter(Item::isImage).count() == max;
+        }
     }
 
     public boolean maxSelectableReached() {

@@ -17,7 +17,9 @@ package com.zhihu.matisse.internal.ui.widget;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -35,6 +37,8 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     private CheckView mCheckView;
     private ImageView mGifTag;
     private TextView mVideoDuration;
+    private View videoBackground;
+    private ImageView ivPlayIcon;
 
     private Item mMedia;
     private PreBindInfo mPreBindInfo;
@@ -53,10 +57,12 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.media_grid_content, this, true);
 
-        mThumbnail = (ImageView) findViewById(R.id.media_thumbnail);
-        mCheckView = (CheckView) findViewById(R.id.check_view);
-        mGifTag = (ImageView) findViewById(R.id.gif);
-        mVideoDuration = (TextView) findViewById(R.id.video_duration);
+        mThumbnail = findViewById(R.id.media_thumbnail);
+        mCheckView = findViewById(R.id.check_view);
+        mGifTag = findViewById(R.id.gif);
+        mVideoDuration = findViewById(R.id.video_duration);
+        videoBackground = findViewById(R.id.v_video_background);
+        ivPlayIcon = findViewById(R.id.iv_play_icon);
 
         mThumbnail.setOnClickListener(this);
         mCheckView.setOnClickListener(this);
@@ -98,7 +104,7 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     public void setCheckEnabled(boolean enabled) {
-        mCheckView.setEnabled(enabled);
+//        mCheckView.setEnabled(enabled);
     }
 
     public void setCheckedNum(int checkedNum) {
@@ -111,9 +117,18 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
 
     private void setImage() {
         if (mMedia.isGif()) {
+            videoBackground.setVisibility(GONE);
+            ivPlayIcon.setVisibility(GONE);
             SelectionSpec.getInstance().imageEngine.loadGifThumbnail(getContext(), mPreBindInfo.mResize,
                     mPreBindInfo.mPlaceholder, mThumbnail, mMedia.getContentUri());
         } else {
+            if (mMedia.isVideo()) {
+                videoBackground.setVisibility(VISIBLE);
+                ivPlayIcon.setVisibility(VISIBLE);
+            } else if (mMedia.isImage()) {
+                videoBackground.setVisibility(GONE);
+                ivPlayIcon.setVisibility(GONE);
+            }
             SelectionSpec.getInstance().imageEngine.loadThumbnail(getContext(), mPreBindInfo.mResize,
                     mPreBindInfo.mPlaceholder, mThumbnail, mMedia.getContentUri());
         }

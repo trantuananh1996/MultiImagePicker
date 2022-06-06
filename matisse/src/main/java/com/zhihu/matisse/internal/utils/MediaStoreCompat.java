@@ -87,15 +87,6 @@ public class MediaStoreCompat {
                         mCaptureStrategy.authority, photoFile);
                 captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCurrentPhotoUri);
                 captureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    List<ResolveInfo> resInfoList = context.getPackageManager()
-                            .queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
-                    for (ResolveInfo resolveInfo : resInfoList) {
-                        String packageName = resolveInfo.activityInfo.packageName;
-                        context.grantUriPermission(packageName, mCurrentPhotoUri,
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    }
-                }
                 if (mFragment != null) {
                     mFragment.get().startActivityForResult(captureIntent, requestCode);
                 } else {
@@ -127,7 +118,7 @@ public class MediaStoreCompat {
         // Avoid joining path components manually
         File tempFile = new File(storageDir, imageFileName);
 
-        // Handle the situation that user's external storage is not ready
+        // Avoid joining path components manually
         if (!Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(tempFile))) {
             return null;
         }

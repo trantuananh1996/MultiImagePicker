@@ -1,13 +1,7 @@
 package net.yazeed44.multiimagepicker;
 
-
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -19,14 +13,23 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.zhihu.matisse.Matisse;
 
 import net.yazeed44.imagepicker.data.model.ImageEntry;
 import net.yazeed44.imagepicker.sample.R;
 import net.yazeed44.imagepicker.util.Picker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements Picker.PickListener {
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
         setContentView(R.layout.activity_main);
 
 
-        mImageSampleRecycler = (RecyclerView) findViewById(R.id.images_sample);
+        mImageSampleRecycler = findViewById(R.id.images_sample);
         setupRecycler();
 
 
@@ -56,11 +59,19 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
     }
 
+    private final ActivityResultLauncher<Intent> resultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getData() == null) return;
+                List<String> paths = Matisse.obtainPathResult(result.getData());
+                Log.d("Trungnk", ": " + paths);
+            });
+
 
     public void onClickPickImageSingle(View view) {
         Picker picker = new Picker.Builder(this)
                 .limitPhoto(5)
                 .limitVideo(5)
+                .resultLauncher(resultLauncher)
                 .build();
         picker.startActivity();
     }

@@ -2,10 +2,12 @@ package net.yazeed44.imagepicker.util;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.FragmentActivity;
 
 import com.github.florent37.runtimepermission.PermissionResult;
@@ -40,9 +42,8 @@ public class Picker {
     private Set<MimeType> mimeTypes;
     private Filter filter;
     private boolean canCapture;
-    private SelectionCreator.OnChooseResultMediaListener onChooseResultMediaListener;
-    private OnCheckedListener onCheckedListener;
     private int gridExpectedSize = 124;
+    private ActivityResultLauncher<Intent> resultLauncher;
 
     private Picker(Builder builder) {
         limitPhoto = builder.limitPhoto;
@@ -53,9 +54,8 @@ public class Picker {
         mimeTypes = builder.mimeTypes;
         filter = builder.filter;
         canCapture = builder.canCapture;
-        onChooseResultMediaListener = builder.onChooseResultMediaListener;
-        onCheckedListener = builder.onCheckedListener;
         gridExpectedSize = builder.gridExpectedSize;
+        resultLauncher = builder.resultLauncher;
     }
 
 
@@ -93,20 +93,14 @@ public class Picker {
                 .capture(canCapture)
 //                .captureStrategy(
 //                        new CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider", "test"))
-                .maxSelectable(limitPhoto)
+                .maxSelectablePerMediaType(2, 3)
                 .addFilter(filter)
                 .gridExpectedSize(gridExpectedSize)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 .thumbnailScale(0.7f)
                 .imageEngine(new GlideEngine())
-//                .showSingleMediaType(true)
-//                .originalEnable(true)
-//                .maxOriginalSize(10)
-//                .autoHideToolbarOnSingleTap(true)
-                .setListenerResult(onChooseResultMediaListener)
-                .picker();
-
-
+                .maxVideoLength(300)
+                .picker(resultLauncher);
     }
 
 
@@ -139,9 +133,9 @@ public class Picker {
         private Set<MimeType> mimeTypes;
         private Filter filter;
         private boolean canCapture;
-        private SelectionCreator.OnChooseResultMediaListener onChooseResultMediaListener;
         private OnCheckedListener onCheckedListener;
         private int gridExpectedSize;
+        private ActivityResultLauncher<Intent> resultLauncher;
 
         public Builder(FragmentActivity fragmentActivity) {
             this.activityWeakReference = new WeakReference<>(fragmentActivity);
@@ -182,11 +176,6 @@ public class Picker {
             return this;
         }
 
-        public Builder onChooseResultMediaListener(SelectionCreator.OnChooseResultMediaListener onChooseResultMediaListener) {
-            this.onChooseResultMediaListener = onChooseResultMediaListener;
-            return this;
-        }
-
         public Builder onCheckedListener(OnCheckedListener onCheckedListener) {
             this.onCheckedListener = onCheckedListener;
             return this;
@@ -197,7 +186,15 @@ public class Picker {
             return this;
         }
 
+        public Builder resultLauncher(ActivityResultLauncher<Intent> val) {
+            resultLauncher = val;
+            return this;
+        }
+
         public Picker build() {
+            if (mimeTypes == null) {
+                mimeTypes = MimeType.ofAll();
+            }
             return new Picker(this);
         }
     }

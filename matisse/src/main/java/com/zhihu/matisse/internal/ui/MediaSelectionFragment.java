@@ -18,13 +18,15 @@ package com.zhihu.matisse.internal.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Album;
@@ -58,7 +60,7 @@ public class MediaSelectionFragment extends Fragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof SelectionProvider) {
             mSelectionProvider = (SelectionProvider) context;
@@ -75,23 +77,17 @@ public class MediaSelectionFragment extends Fragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_media_selection, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        if (getArguments() == null) return;
         Album album = getArguments().getParcelable(EXTRA_ALBUM);
-
-        mAdapter = new AlbumMediaAdapter(getContext(),
+        mRecyclerView = view.findViewById(R.id.recyclerview);
+        mAdapter = new AlbumMediaAdapter(getActivity(),
                 mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
         mAdapter.registerCheckStateListener(this);
         mAdapter.registerOnMediaClickListener(this);
@@ -100,7 +96,7 @@ public class MediaSelectionFragment extends Fragment implements
         int spanCount;
         SelectionSpec selectionSpec = SelectionSpec.getInstance();
         if (selectionSpec.gridExpectedSize > 0) {
-            spanCount = UIUtils.spanCount(getContext(), selectionSpec.gridExpectedSize);
+            spanCount = UIUtils.spanCount(getActivity(), selectionSpec.gridExpectedSize);
         } else {
             spanCount = selectionSpec.spanCount;
         }
@@ -148,7 +144,7 @@ public class MediaSelectionFragment extends Fragment implements
     @Override
     public void onMediaClick(Album album, Item item, int adapterPosition) {
         if (mOnMediaClickListener != null) {
-            mOnMediaClickListener.onMediaClick((Album) getArguments().getParcelable(EXTRA_ALBUM),
+            mOnMediaClickListener.onMediaClick(getArguments().getParcelable(EXTRA_ALBUM),
                     item, adapterPosition);
         }
     }

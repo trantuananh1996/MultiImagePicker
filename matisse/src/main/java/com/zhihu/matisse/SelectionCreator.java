@@ -36,7 +36,7 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT;
 import android.app.Activity;
 import android.content.Intent;
 
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,7 +54,6 @@ import com.zhihu.matisse.ui.MatisseActivity;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -64,12 +63,7 @@ import java.util.Set;
 public final class SelectionCreator {
     private final Matisse mMatisse;
     private final SelectionSpec mSelectionSpec;
-    private OnChooseResultMediaListener onChooseResultMediaListener;
 
-    public SelectionCreator setListenerResult(OnChooseResultMediaListener onChooseMediaListener) {
-        this.onChooseResultMediaListener = onChooseMediaListener;
-        return this;
-    }
 
     @IntDef({
             SCREEN_ORIENTATION_UNSPECIFIED,
@@ -96,8 +90,8 @@ public final class SelectionCreator {
     /**
      * Constructs a new specification builder on the context.
      *
-     * @param matisse   a requester context wrapper.
-     * @param mimeTypes MIME type set to select.
+     * @param matisse        a requester context wrapper.
+     * @param mimeTypes      MIME type set to select.
      */
     SelectionCreator(Matisse matisse, @NonNull Set<MimeType> mimeTypes, boolean mediaTypeExclusive) {
         mMatisse = matisse;
@@ -106,6 +100,7 @@ public final class SelectionCreator {
         mSelectionSpec.mediaTypeExclusive = mediaTypeExclusive;
         mSelectionSpec.orientation = SCREEN_ORIENTATION_UNSPECIFIED;
     }
+
 
     /**
      * Whether to show only one media type if choosing medias are only images or videos.
@@ -338,6 +333,11 @@ public final class SelectionCreator {
         return this;
     }
 
+    public SelectionCreator maxVideoLength(long second) {
+         mSelectionSpec.maxDuration = second;
+         return this;
+    }
+
     /**
      * Set listener for callback immediately when user check or uncheck original.
      *
@@ -352,21 +352,15 @@ public final class SelectionCreator {
     /**
      * Start to select media and wait for result.
      *
-     * @param requestCode Identity of the request Activity or Fragment.
+     * @param resultLauncher
      */
-    public void picker() {
+
+
+    public void picker(ActivityResultLauncher<Intent> resultLauncher) {
         FragmentActivity activity = mMatisse.getActivity();
         if (activity == null) return;
         Intent intent = new Intent(activity, MatisseActivity.class);
-
-        activity.registerForActivityResult(
-                        new ActivityResultContracts.StartActivityForResult(),
-                        result -> {
-                            if (onChooseResultMediaListener != null && result.getData() != null) {
-                                onChooseResultMediaListener.onChooseMediaSusses(Matisse.obtainPathResult(result.getData()));
-                            }
-                        })
-                .launch(intent);
+        resultLauncher.launch(intent);
     }
 
     public SelectionCreator showPreview(boolean showPreview) {
@@ -374,7 +368,4 @@ public final class SelectionCreator {
         return this;
     }
 
-    public interface OnChooseResultMediaListener {
-        void onChooseMediaSusses(List<String> paths);
-    }
 }

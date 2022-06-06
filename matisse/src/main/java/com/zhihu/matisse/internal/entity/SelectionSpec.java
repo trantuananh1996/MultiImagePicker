@@ -22,6 +22,7 @@ import androidx.annotation.StyleRes;
 
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.R;
+import com.zhihu.matisse.SelectionCreator;
 import com.zhihu.matisse.engine.ImageEngine;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.filter.Filter;
@@ -57,6 +58,7 @@ public final class SelectionSpec {
     public int originalMaxSize;
     public OnCheckedListener onCheckedListener;
     public boolean showPreview;
+    public long maxDuration;
 
     private SelectionSpec() {
     }

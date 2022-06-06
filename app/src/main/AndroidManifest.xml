@@ -3,6 +3,7 @@
     package="net.yazeed44.imagepicker.sample"
     android:versionCode="2">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name="net.yazeed44.multiimagepicker.Application"
