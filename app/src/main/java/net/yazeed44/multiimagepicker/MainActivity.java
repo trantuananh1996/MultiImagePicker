@@ -1,5 +1,6 @@
 package net.yazeed44.multiimagepicker;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -22,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.zhihu.matisse.Matisse;
 
+
+import net.yazeed44.imagepicker.Matisse;
 import net.yazeed44.imagepicker.data.model.ImageEntry;
+import net.yazeed44.imagepicker.sample.BuildConfig;
 import net.yazeed44.imagepicker.sample.R;
 import net.yazeed44.imagepicker.util.Picker;
 
@@ -32,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements Picker.PickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Sample activity";
     private RecyclerView mImageSampleRecycler;
@@ -62,8 +65,16 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
     private final ActivityResultLauncher<Intent> resultLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getData() == null) return;
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Log.d("Trungnk", "1: ");
+                } else {
+                    Log.d("Trungnk", "2: ");
+                }
+
+
                 List<String> paths = Matisse.obtainPathResult(result.getData());
-                Log.d("Trungnk", ": " + paths);
+//                mSelectedImages = images;
+//                setupImageSamples();
             });
 
 
@@ -71,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
         Picker picker = new Picker.Builder(this)
                 .limitPhoto(5)
                 .limitVideo(5)
+                .canCapture(true)
+                .fileProvider(BuildConfig.APPLICATION_ID + ".fileprovider")
                 .resultLauncher(resultLauncher)
                 .build();
         picker.startActivity();
@@ -140,26 +153,6 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
     }
 
-
-    @Override
-    public void onPickedSuccessfully(ArrayList<ImageEntry> images) {
-        mSelectedImages = images;
-        setupImageSamples();
-        Log.d(TAG, "Picked images  " + images.toString());
-    }
-
-    private void setupImageSamples() {
-        mImageSampleRecycler.setAdapter(new ImageSamplesAdapter());
-    }
-
-    @Override
-    public void onCancel() {
-        Log.i(TAG, "User canceled picker activity");
-        Toast.makeText(this, "User canceld picker activtiy", Toast.LENGTH_SHORT).show();
-
-    }
-
-
     private class ImageSamplesAdapter extends RecyclerView.Adapter<ImageSampleViewHolder> {
 
 
@@ -171,8 +164,7 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
         @Override
         public void onBindViewHolder(ImageSampleViewHolder holder, int position) {
-
-            final String path = mSelectedImages.get(position).path;
+            final String path = mSelectedImages.get(position).getPath();
             loadImage(path, holder.thumbnail);
         }
 

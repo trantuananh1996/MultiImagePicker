@@ -68,12 +68,9 @@ public class AlbumMediaAdapter extends
         if (viewType == VIEW_TYPE_CAPTURE) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_capture_item, parent, false);
             CaptureViewHolder holder = new CaptureViewHolder(v);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v.getContext() instanceof OnPhotoCapture) {
-                        ((OnPhotoCapture) v.getContext()).capture();
-                    }
+            holder.itemView.setOnClickListener(v1 -> {
+                if (v1.getContext() instanceof OnPhotoCapture) {
+                    ((OnPhotoCapture) v1.getContext()).capture();
                 }
             });
             return holder;

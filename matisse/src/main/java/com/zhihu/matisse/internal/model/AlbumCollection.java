@@ -19,6 +19,7 @@ package com.zhihu.matisse.internal.model;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -26,6 +27,7 @@ import androidx.loader.content.Loader;
 import com.zhihu.matisse.internal.loader.AlbumLoader;
 
 import java.lang.ref.WeakReference;
+import java.util.Random;
 
 public class AlbumCollection implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 1;
@@ -97,6 +99,11 @@ public class AlbumCollection implements LoaderManager.LoaderCallbacks<Cursor> {
     public void loadAlbums() {
         mLoaderManager.initLoader(LOADER_ID, null, this);
     }
+
+    public void reloadAll() {
+        mLoaderManager.initLoader(new Random().nextInt(9999999), null, this);
+    }
+
 
     public int getCurrentSelection() {
         return mCurrentSelection;

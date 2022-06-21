@@ -23,26 +23,28 @@
 
     <application android:allowBackup="true">
         <activity
-            android:name="net.yazeed44.imagepicker.ui.camera.CameraActivity"
-            android:screenOrientation="portrait" />
+            android:name="net.yazeed44.imagepicker.ui.MatisseActivity"
+            android:exported="false" />
+        <activity
+            android:name="net.yazeed44.imagepicker.internal.ui.AlbumPreviewActivity"
+            android:exported="false" />
+        <activity
+            android:name="net.yazeed44.imagepicker.internal.ui.SelectedPreviewActivity"
+            android:exported="false" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity
-            android:name="net.yazeed44.imagepicker.ui.PickerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name="net.yazeed44.imagepicker.ui.imagePreview.ImagePreviewActivity" />
-
-        <service
-            android:name="net.yazeed44.imagepicker.util.OfflineSpiceService"
-            android:exported="false" />
+<!--        <provider-->
+<!--            android:name="androidx.core.content.FileProvider"-->
+<!--            android:authorities="${applicationId}.fileprovider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/provider_paths" />-->
+<!--        </provider>-->
     </application>
 
 </manifest>

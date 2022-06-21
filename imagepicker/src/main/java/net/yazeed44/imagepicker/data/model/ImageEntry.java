@@ -19,49 +19,110 @@ import android.util.Base64;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
+import org.jetbrains.annotations.Contract;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by yazeed44
  * on 6/14/15.
  */
 public class ImageEntry implements Parcelable {
-    public final int imageId;
-    public String path;
-    public final long dateAdded;
-    public boolean isPicked = false;
-    public boolean isVideo = false;
+    private final int imageId;
+    private final String path;
+    private final long dateAdded;
+    private boolean isPicked;
+    private boolean isVideo;
 
     private int orientation = 0;
     private int maxDimen = 1152;
     private int compressPercent = 100;
     private Bitmap bitmap;
 
-    private Context context;
     private String description = "";
     private boolean uploaded;
     private int progress;
 
-    public String S3Url;
-    public String genId;
-    public int offset;
+    private String S3Url;
+    private String genId;
+    private int offset;
+    private String pathCompress;
 
-    private void logException(Throwable e) {
-//        e.printStackTrace();
+    protected ImageEntry(Parcel in) {
+        imageId = in.readInt();
+        path = in.readString();
+        dateAdded = in.readLong();
+        isPicked = in.readByte() != 0;
+        isVideo = in.readByte() != 0;
+        orientation = in.readInt();
+        maxDimen = in.readInt();
+        compressPercent = in.readInt();
+        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
+        description = in.readString();
+        uploaded = in.readByte() != 0;
+        progress = in.readInt();
+        S3Url = in.readString();
+        genId = in.readString();
+        offset = in.readInt();
+        pathCompress = in.readString();
     }
 
-    public ImageEntry(String path, Bitmap bitmap, Long dateAdded) {
-        this.path = path;
-        this.imageId = dateAdded.intValue();
-        this.bitmap = bitmap;
-        this.dateAdded = dateAdded;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(imageId);
+        dest.writeString(path);
+        dest.writeLong(dateAdded);
+        dest.writeByte((byte) (isPicked ? 1 : 0));
+        dest.writeByte((byte) (isVideo ? 1 : 0));
+        dest.writeInt(orientation);
+        dest.writeInt(maxDimen);
+        dest.writeInt(compressPercent);
+        dest.writeParcelable(bitmap, flags);
+        dest.writeString(description);
+        dest.writeByte((byte) (uploaded ? 1 : 0));
+        dest.writeInt(progress);
+        dest.writeString(S3Url);
+        dest.writeString(genId);
+        dest.writeInt(offset);
+        dest.writeString(pathCompress);
+    }
+
+    public static final Creator<ImageEntry> CREATOR = new Creator<ImageEntry>() {
+        @Override
+        public ImageEntry createFromParcel(Parcel in) {
+            return new ImageEntry(in);
+        }
+
+        @Override
+        public ImageEntry[] newArray(int size) {
+            return new ImageEntry[size];
+        }
+    };
+
+    public ImageEntry setS3Url(String s3Url) {
+        S3Url = s3Url;
+        return this;
+    }
+
+    public ImageEntry setGenId(String genId) {
+        this.genId = genId;
+        return this;
+    }
+
+    public String getPathCompress() {
+        return (pathCompress == null || pathCompress.trim().isEmpty()) ? path : pathCompress;
+    }
+
+    public ImageEntry setPathCompress(String pathCompress) {
+        this.pathCompress = pathCompress;
+        return this;
+    }
+
+    private void logException(Throwable e) {
+        e.printStackTrace();
     }
 
     public String getBase64(int maxSizeKB) {
@@ -281,14 +342,6 @@ public class ImageEntry implements Parcelable {
         return cursor.getInt(0);
     }
 
-    public Context getContext() {
-        return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -313,28 +366,49 @@ public class ImageEntry implements Parcelable {
         return progress;
     }
 
-    static class FlushedInputStream extends FilterInputStream {
-        public FlushedInputStream(InputStream inputStream) {
-            super(inputStream);
-        }
+    public int getImageId() {
+        return imageId;
+    }
 
-        @Override
-        public long skip(long n) throws IOException {
-            long totalBytesSkipped = 0L;
-            while (totalBytesSkipped < n) {
-                long bytesSkipped = in.skip(n - totalBytesSkipped);
-                if (bytesSkipped == 0L) {
-                    int b = read();
-                    if (b < 0) {
-                        break;  // we reached EOF
-                    } else {
-                        bytesSkipped = 1; // we read one byte
-                    }
-                }
-                totalBytesSkipped += bytesSkipped;
-            }
-            return totalBytesSkipped;
-        }
+    public String getPath() {
+        return path;
+    }
+
+    public long getDateAdded() {
+        return dateAdded;
+    }
+
+    public boolean isPicked() {
+        return isPicked;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public boolean isUploaded() {
+        return uploaded;
+    }
+
+    public String getS3Url() {
+        return S3Url;
+    }
+
+    public String getGenId() {
+        return genId;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -350,7 +424,7 @@ public class ImageEntry implements Parcelable {
 
             // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
             // with both dimensions larger than or equal to the requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+            inSampleSize = Math.min(heightRatio, widthRatio);
 
             // This offers some additional logic in case the image has a strange
             // aspect ratio. For example, a panorama may have a much larger
@@ -371,29 +445,24 @@ public class ImageEntry implements Parcelable {
     }
 
     public Bitmap decodeFile(File f) {
-        //Decode image size
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(f.getAbsolutePath(), o);
-//        Log.e("Test", "ABC");
-        int original_width = o.outWidth;
-        int original_height = o.outHeight;
-        int new_width = original_width;
-        int new_height = original_height;
-        if (original_width > maxDimen) {
-            new_width = maxDimen;
-            new_height = (new_width * original_height) / original_width;
+        int originalWidth = o.outWidth;
+        int originalHeight = o.outHeight;
+        int newWidth = originalWidth;
+        int newHeight = originalHeight;
+        if (originalWidth > maxDimen) {
+            newWidth = maxDimen;
+            newHeight = (newWidth * originalHeight) / originalWidth;
         }
-        if (new_height > maxDimen) {
-            new_height = maxDimen;
-            new_width = (new_height * original_width) / original_height;
+        if (newHeight > maxDimen) {
+            newHeight = maxDimen;
+            newWidth = (newHeight * originalWidth) / originalHeight;
         }
 
-        //Decode with inSampleSize
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = calculateInSampleSize(o, new_width, new_height);
-//        Log.e("Sample size", "is " + options.inSampleSize);
-//            options.inJustDecodeBounds = false;
+        options.inSampleSize = calculateInSampleSize(o, newWidth, newHeight);
         return BitmapFactory.decodeFile(f.getAbsolutePath(), options);
     }
 
@@ -404,44 +473,39 @@ public class ImageEntry implements Parcelable {
         } else {
             File imgFile = new File(path);
             if (imgFile.exists()) {
-//                Log.e("Path", "abc" + path);
-                if (context != null) {
-                    return loadBitmapWithGlide(path);
-                } else {
-                    Bitmap bm;
-                    bm = decodeFile(imgFile);
-                    return rotateImage(bm, orientation);
+                bitmap = decodeFile(path);
+                if (bitmap == null) {
+                    bitmap = rotateImage(decodeFile(imgFile), orientation);
                 }
+                return bitmap;
             }
         }
         return null;
     }
 
-    private Bitmap loadBitmapWithGlide(String path) {
+    private Bitmap decodeFile(String path) {
         try {
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(new File(path).getAbsolutePath(), o);
-//            Log.e("Test", "ABC");
-            int original_width = o.outWidth;
-            int original_height = o.outHeight;
-            int new_width = original_width;
-            int new_height = original_height;
-            if (original_width > maxDimen) {
-                new_width = maxDimen;
-                new_height = (new_width * original_height) / original_width;
+            int originalWidth = o.outWidth;
+            int originalHeight = o.outHeight;
+            int newWidth = originalWidth;
+            int newHeight = originalHeight;
+            if (originalWidth > maxDimen) {
+                newWidth = maxDimen;
+                newHeight = (newWidth * originalHeight) / originalWidth;
             }
-            if (new_height > maxDimen) {
-                new_height = maxDimen;
-                new_width = (new_height * original_width) / original_height;
+            if (newHeight > maxDimen) {
+                newHeight = maxDimen;
+                newWidth = (newHeight * originalWidth) / originalHeight;
             }
-
-            Bitmap bm = Glide.with(context).asBitmap().load(path).into(new_width, new_height).get();
-            return rotateImage(bm, orientation);
-        } catch (InterruptedException e) {
-            logException(e);
-        } catch (ExecutionException e) {
-            logException(e);
+            Matrix matrix = new Matrix();
+            matrix.postScale(newWidth, newHeight);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            return rotateImage(bitmap, orientation);
+        } catch (Exception exception) {
+            logException(exception);
         }
         return null;
     }
@@ -460,24 +524,24 @@ public class ImageEntry implements Parcelable {
 
     @Nullable
     public Bitmap getScaledBitmap() {
-        Bitmap origin_bm = getBitmap();
-        if (origin_bm == null) return null;
-        int original_width = origin_bm.getWidth();
-        int original_height = origin_bm.getHeight();
-        int new_width = original_width;
-        int new_height = original_height;
-        if (original_width > maxDimen) {
-            new_width = maxDimen;
-            new_height = (new_width * original_height) / original_width;
+        Bitmap originBm = getBitmap();
+        if (originBm == null) return null;
+        int originalWidth = originBm.getWidth();
+        int originalHeight = originBm.getHeight();
+        int newWidth = originalWidth;
+        int newHeight = originalHeight;
+        if (originalWidth > maxDimen) {
+            newWidth = maxDimen;
+            newHeight = (newWidth * originalHeight) / originalWidth;
         }
-        if (new_height > maxDimen) {
-            new_height = maxDimen;
-            new_width = (new_height * original_width) / original_height;
+        if (newHeight > maxDimen) {
+            newHeight = maxDimen;
+            newWidth = (newHeight * originalWidth) / originalHeight;
         }
-        return BITMAP_RESIZER(origin_bm, new_width, new_height);
+        return bitmapResizer(originBm, newWidth, newHeight);
     }
 
-    private Bitmap BITMAP_RESIZER(Bitmap bitmap, int newWidth, int newHeight) {
+    private Bitmap bitmapResizer(Bitmap bitmap, int newWidth, int newHeight) {
         Bitmap scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
 
         float ratioX = newWidth / (float) bitmap.getWidth();
@@ -502,22 +566,31 @@ public class ImageEntry implements Parcelable {
         if (img == null) return null;
         Matrix matrix = new Matrix();
         matrix.postRotate(degree);
-        //        img.recycle();
         return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
     }
 
-    public ImageEntry(final Builder builder) {
-        this.path = builder.mPath;
-        this.imageId = builder.mImageId;
-        this.dateAdded = builder.mDateAdded;
+    private ImageEntry(Builder builder) {
+        imageId = builder.imageId;
+        path = builder.path;
+        dateAdded = builder.dateAdded;
+        isPicked = builder.isPicked;
+        isVideo = builder.isVideo;
     }
 
-    public static ImageEntry from(final Cursor cursor) {
-        return Builder.from(cursor).build();
+//    public static ImageEntry from(final Cursor cursor) {
+//        return Builder.from(cursor).build();
+//    }
+
+    @NonNull
+    @Contract("_ -> new")
+    public static ImageEntry from(final String path) {
+        return Builder.from(path).build();
     }
 
-    public static ImageEntry from(final Uri uri) {
-        return Builder.from(uri).build();
+    @NonNull
+    @Contract("_ -> new")
+    public static ImageEntry fromPathLocal(final String path) {
+        return Builder.from(path).isPicked(true).build();
     }
 
     @Override
@@ -549,60 +622,6 @@ public class ImageEntry implements Parcelable {
         this.compressPercent = compressPercent;
     }
 
-    public static class Builder {
-
-        public static int count = -1;
-        private final String mPath;
-        private int mImageId;
-        private long mDateAdded;
-
-        public Builder(final String path) {
-            this.mPath = path;
-        }
-
-        public static Builder from(final Uri uri) {
-
-            return new Builder(uri.getPath())
-                    .imageId(count--)
-                    ;
-
-        }
-
-        public static Builder from(final Cursor cursor) {
-            final int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-            final int imageIdColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID);
-            final int dateAddedColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED);
-
-            final int imageId = cursor.getInt(imageIdColumn);
-            final String path = cursor.getString(dataColumn);
-            final long dateAdded = cursor.getLong(dateAddedColumn);
-
-            return new Builder(path)
-                    .imageId(imageId)
-                    .dateAdded(dateAdded)
-                    ;
-
-        }
-
-
-        public Builder imageId(int imageId) {
-            this.mImageId = imageId;
-            return this;
-        }
-
-        public Builder dateAdded(long timestamp) {
-            this.mDateAdded = timestamp;
-            return this;
-        }
-
-
-        public ImageEntry build() {
-            return new ImageEntry(this);
-        }
-
-
-    }
-
     public int getMaxDimen() {
         return maxDimen;
     }
@@ -611,62 +630,59 @@ public class ImageEntry implements Parcelable {
         this.maxDimen = maxDimen;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.imageId);
-        dest.writeString(this.path);
-        dest.writeLong(this.dateAdded);
-        dest.writeByte(this.isPicked ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isVideo ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.orientation);
-        dest.writeInt(this.maxDimen);
-        dest.writeInt(this.compressPercent);
-        dest.writeString(this.description);
-        dest.writeByte(this.uploaded ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.progress);
-        dest.writeString(this.genId);
-        dest.writeString(this.S3Url);
-        dest.writeInt(this.offset);
-    }
-
-    protected ImageEntry(Parcel in) {
-        this.imageId = in.readInt();
-        this.path = in.readString();
-        this.dateAdded = in.readLong();
-        this.isPicked = in.readByte() != 0;
-        this.isVideo = in.readByte() != 0;
-        this.orientation = in.readInt();
-        this.maxDimen = in.readInt();
-        this.compressPercent = in.readInt();
-        this.description = in.readString();
-        this.uploaded = in.readByte() != 0;
-        this.progress = in.readInt();
-        this.genId = in.readString();
-        this.S3Url = in.readString();
-        this.offset = in.readInt();
-    }
-
     @NonNull
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-    public static final Creator<ImageEntry> CREATOR = new Creator<ImageEntry>() {
-        @Override
-        public ImageEntry createFromParcel(Parcel source) {
-            return new ImageEntry(source);
+
+    public static final class Builder {
+        private static int count = -1;
+        private int imageId;
+        private String path;
+        private long dateAdded;
+        private boolean isPicked;
+        private boolean isVideo;
+
+
+        public Builder() {
         }
 
-        @Override
-        public ImageEntry[] newArray(int size) {
-            return new ImageEntry[size];
+        public static Builder from(final String path) {
+            return new Builder()
+                    .path(path)
+                    .imageId(count--);
         }
-    };
+
+
+        public Builder imageId(int imageId) {
+            this.imageId = imageId;
+            return this;
+        }
+
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder dateAdded(long dateAdded) {
+            this.dateAdded = dateAdded;
+            return this;
+        }
+
+        public Builder isPicked(boolean isPicked) {
+            this.isPicked = isPicked;
+            return this;
+        }
+
+        public Builder isVideo(boolean isVideo) {
+            this.isVideo = isVideo;
+            return this;
+        }
+
+        public ImageEntry build() {
+            return new ImageEntry(this);
+        }
+    }
 }

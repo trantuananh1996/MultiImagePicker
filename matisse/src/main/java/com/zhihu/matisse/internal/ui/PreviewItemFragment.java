@@ -79,7 +79,6 @@ public class PreviewItemFragment extends Fragment {
                     item.getContentUri());
         } else {
             videoPlayer.setVisibility(View.GONE);
-            videoPlayer.setVisibility(View.VISIBLE);
             image.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
             image.setSingleTapListener(() -> {
                 if (mListener != null) {

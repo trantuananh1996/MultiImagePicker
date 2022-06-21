@@ -19,10 +19,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -98,49 +100,45 @@ public abstract class BasePreviewActivity extends AppCompatActivity implements V
             mSelectedCollection.onCreate(savedInstanceState);
             mOriginalEnable = savedInstanceState.getBoolean(CHECK_STATE);
         }
-        mButtonBack = (TextView) findViewById(R.id.button_back);
-        mButtonApply = (TextView) findViewById(R.id.button_apply);
-        mSize = (TextView) findViewById(R.id.size);
+        mButtonBack = findViewById(R.id.button_back);
+        mButtonApply = findViewById(R.id.button_apply);
+        mSize = findViewById(R.id.size);
         mButtonBack.setOnClickListener(this);
         mButtonApply.setOnClickListener(this);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPager.addOnPageChangeListener(this);
         mAdapter = new PreviewPagerAdapter(getSupportFragmentManager(), null);
         mPager.setAdapter(mAdapter);
-        mCheckView = (CheckView) findViewById(R.id.check_view);
+        mCheckView = findViewById(R.id.check_view);
         mCheckView.setCountable(mSpec.countable);
         mBottomToolbar = findViewById(R.id.bottom_toolbar);
         mTopToolbar = findViewById(R.id.top_toolbar);
 
-        mCheckView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Item item = mAdapter.getMediaItem(mPager.getCurrentItem());
-                if (mSelectedCollection.isSelected(item)) {
-                    mSelectedCollection.remove(item);
-                    if (mSpec.countable) {
-                        mCheckView.setCheckedNum(CheckView.UNCHECKED);
-                    } else {
-                        mCheckView.setChecked(false);
-                    }
+        mCheckView.setOnClickListener(v -> {
+            Item item = mAdapter.getMediaItem(mPager.getCurrentItem());
+            if (mSelectedCollection.isSelected(item)) {
+                mSelectedCollection.remove(item);
+                if (mSpec.countable) {
+                    mCheckView.setCheckedNum(CheckView.UNCHECKED);
                 } else {
-                    if (assertAddSelection(item)) {
-                        mSelectedCollection.add(item);
-                        if (mSpec.countable) {
-                            mCheckView.setCheckedNum(mSelectedCollection.checkedNumOf(item));
-                        } else {
-                            mCheckView.setChecked(true);
-                        }
+                    mCheckView.setChecked(false);
+                }
+            } else {
+                if (assertAddSelection(item)) {
+                    mSelectedCollection.add(item);
+                    if (mSpec.countable) {
+                        mCheckView.setCheckedNum(mSelectedCollection.checkedNumOf(item));
+                    } else {
+                        mCheckView.setChecked(true);
                     }
                 }
-                updateApplyButton();
+            }
+            updateApplyButton();
 
-                if (mSpec.onSelectedListener != null) {
-                    mSpec.onSelectedListener.onSelected(
-                            mSelectedCollection.asListOfUri(), mSelectedCollection.asListOfString());
-                }
+            if (mSpec.onSelectedListener != null) {
+                mSpec.onSelectedListener.onSelected(
+                        mSelectedCollection.asListOfUri(), mSelectedCollection.asListOfString());
             }
         });
 

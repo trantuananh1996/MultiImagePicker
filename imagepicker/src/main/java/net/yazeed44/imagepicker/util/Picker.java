@@ -13,18 +13,15 @@ import androidx.fragment.app.FragmentActivity;
 import com.github.florent37.runtimepermission.PermissionResult;
 import com.github.florent37.runtimepermission.RuntimePermission;
 import com.pr.swalert.toast.ToastUtils;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.SelectionCreator;
-import com.zhihu.matisse.engine.impl.GlideEngine;
-import com.zhihu.matisse.filter.Filter;
-import com.zhihu.matisse.listener.OnCheckedListener;
 
-import net.yazeed44.imagepicker.data.model.ImageEntry;
+import net.yazeed44.imagepicker.Matisse;
+import net.yazeed44.imagepicker.MimeType;
+import net.yazeed44.imagepicker.engine.impl.GlideEngine;
+import net.yazeed44.imagepicker.filter.Filter;
+import net.yazeed44.imagepicker.internal.entity.CaptureStrategy;
 import net.yazeed44.imagepicker.library.R;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,25 +34,25 @@ public class Picker {
     private int limitPhoto = -1;
     private int limitVideo = -1;
     private WeakReference<FragmentActivity> activityWeakReference;
-    private PickListener pickListener;
     private long maxSizeFile = -1;
     private Set<MimeType> mimeTypes;
     private Filter filter;
     private boolean canCapture;
     private int gridExpectedSize = 124;
     private ActivityResultLauncher<Intent> resultLauncher;
+    private String fileProvider;
 
     private Picker(Builder builder) {
         limitPhoto = builder.limitPhoto;
         limitVideo = builder.limitVideo;
         activityWeakReference = builder.activityWeakReference;
-        pickListener = builder.pickListener;
         maxSizeFile = builder.maxSizeFile;
         mimeTypes = builder.mimeTypes;
         filter = builder.filter;
         canCapture = builder.canCapture;
         gridExpectedSize = builder.gridExpectedSize;
         resultLauncher = builder.resultLauncher;
+        fileProvider = builder.fileProvider;
     }
 
 
@@ -91,15 +88,16 @@ public class Picker {
                 .choose(mimeTypes, false)
                 .countable(true)
                 .capture(canCapture)
-//                .captureStrategy(
-//                        new CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider", "test"))
-                .maxSelectablePerMediaType(2, 3)
+                .captureStrategy(
+                        new CaptureStrategy(true, fileProvider, "Photo"))
+                .maxSelectablePerMediaType(limitPhoto, limitVideo)
                 .addFilter(filter)
                 .gridExpectedSize(gridExpectedSize)
                 .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
                 .thumbnailScale(0.7f)
                 .imageEngine(new GlideEngine())
                 .maxVideoLength(300)
+                .showSingleMediaType(true)
                 .picker(resultLauncher);
     }
 
@@ -117,29 +115,22 @@ public class Picker {
         return denied;
     }
 
-    public interface PickListener {
-        void onPickedSuccessfully(final ArrayList<ImageEntry> images);
-
-        void onCancel();
-    }
-
-
     public static final class Builder {
         private int limitPhoto;
         private int limitVideo;
         private WeakReference<FragmentActivity> activityWeakReference;
-        private PickListener pickListener;
         private long maxSizeFile;
         private Set<MimeType> mimeTypes;
         private Filter filter;
         private boolean canCapture;
-        private OnCheckedListener onCheckedListener;
         private int gridExpectedSize;
         private ActivityResultLauncher<Intent> resultLauncher;
+        private String fileProvider;
 
         public Builder(FragmentActivity fragmentActivity) {
             this.activityWeakReference = new WeakReference<>(fragmentActivity);
         }
+
 
         public Builder limitPhoto(int limitPhoto) {
             this.limitPhoto = limitPhoto;
@@ -151,8 +142,8 @@ public class Picker {
             return this;
         }
 
-        public Builder pickListener(PickListener pickListener) {
-            this.pickListener = pickListener;
+        public Builder activityWeakReference(WeakReference<FragmentActivity> activityWeakReference) {
+            this.activityWeakReference = activityWeakReference;
             return this;
         }
 
@@ -176,11 +167,6 @@ public class Picker {
             return this;
         }
 
-        public Builder onCheckedListener(OnCheckedListener onCheckedListener) {
-            this.onCheckedListener = onCheckedListener;
-            return this;
-        }
-
         public Builder gridExpectedSize(int gridExpectedSize) {
             this.gridExpectedSize = gridExpectedSize;
             return this;
@@ -191,9 +177,21 @@ public class Picker {
             return this;
         }
 
+        public Builder fileProvider(String fileProvider) {
+            this.fileProvider = fileProvider;
+            return this;
+        }
+
         public Picker build() {
             if (mimeTypes == null) {
-                mimeTypes = MimeType.ofAll();
+                if (limitVideo > 0 && limitPhoto > 0)
+                    mimeTypes = MimeType.ofAll();
+                else {
+                    if (limitPhoto > 0)
+                        mimeTypes = MimeType.ofImage();
+                    else
+                        mimeTypes = MimeType.ofVideo();
+                }
             }
             return new Picker(this);
         }

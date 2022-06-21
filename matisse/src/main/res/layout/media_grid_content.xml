@@ -24,17 +24,17 @@
 
     <View
         android:id="@+id/v_video_background"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#806E6E6E" />
+        android:background="#806E6E6E"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:visibility="gone"
         android:id="@+id/iv_play_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_play_circle_outline_white_48dp" />
 
     <com.zhihu.matisse.internal.ui.widget.CheckView

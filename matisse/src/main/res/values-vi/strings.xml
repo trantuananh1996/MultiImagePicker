@@ -20,5 +20,5 @@
     <string name="error_type_conflict">Không thể chọn hình ảnh và video cùng một lúc</string>
     <string name="error_under_quality">Chất lượng thấp</string>
     <string name="photo_grid_capture">Camera</string>
-    <string name="error_video_duration">Video được chọn không được dài quá %s</string>
+    <string name="error_video_duration">Video được chọn quá dài. Video có độ dài tối đa được chọn là %d:%02d phút</string>
 </resources>

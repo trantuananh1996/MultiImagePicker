@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -123,9 +124,11 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
                     mPreBindInfo.mPlaceholder, mThumbnail, mMedia.getContentUri());
         } else {
             if (mMedia.isVideo()) {
+                Log.d("Trungnk", "setImage() isVideo");
                 videoBackground.setVisibility(VISIBLE);
                 ivPlayIcon.setVisibility(VISIBLE);
             } else if (mMedia.isImage()) {
+                Log.d("Trungnk", "setImage() isImage");
                 videoBackground.setVisibility(GONE);
                 ivPlayIcon.setVisibility(GONE);
             }

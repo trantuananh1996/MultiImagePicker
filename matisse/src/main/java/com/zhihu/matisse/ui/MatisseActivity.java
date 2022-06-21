@@ -15,20 +15,22 @@
  */
 package com.zhihu.matisse.ui;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -44,6 +46,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.FileUtils;
+import com.github.florent37.runtimepermission.PermissionResult;
+import com.github.florent37.runtimepermission.RuntimePermission;
 import com.zhihu.matisse.R;
 import com.zhihu.matisse.internal.entity.Album;
 import com.zhihu.matisse.internal.entity.Item;
@@ -65,6 +70,8 @@ import com.zhihu.matisse.internal.utils.PhotoMetadataUtils;
 
 import com.zhihu.matisse.internal.utils.SingleMediaScanner;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -98,11 +105,30 @@ public class MatisseActivity extends AppCompatActivity implements
     private LinearLayout mOriginalLayout;
     private CheckRadioView mOriginal;
     private boolean mOriginalEnable;
+    private File imageFile;
 
     private final ActivityResultLauncher<Intent> resultLauncherPreview = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), this::showPreview
     );
 
+    private final ActivityResultLauncher<Intent> resultLauncherCapture = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), this::saveImageCapture
+    );
+
+    private void saveImageCapture(ActivityResult activityResult) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(imageFile);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        imageFile = null;
+        mAlbumCollection.reloadAll();
+    }
+
+    private File createImageFile() throws IOException {
+        String imageFileName = String.format("JPEG_%s", System.currentTimeMillis());
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -397,11 +423,30 @@ public class MatisseActivity extends AppCompatActivity implements
         return mSelectedCollection;
     }
 
+
     @Override
     public void capture() {
-        if (mMediaStoreCompat != null) {
-            mMediaStoreCompat.dispatchCaptureIntent(this, REQUEST_CODE_CAPTURE);
-        }
+        RuntimePermission.askPermission(this, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .onDenied(this::handleDeniedPermissions)
+                .onAccepted(result -> {
+                    try {
+                        imageFile = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (mMediaStoreCompat != null && imageFile != null) {
+                        mMediaStoreCompat.dispatchCaptureIntent(this, resultLauncherCapture, imageFile);
+                    }
+                })
+                .ask();
+
+    }
+
+    private void handleDeniedPermissions(PermissionResult result) {
+//        StringBuilder denied = getPermissionsString(activity, result, isDenied ? result.getDenied() : result.getForeverDenied());
+//        ToastUtils.alertYesNo(activity, String.format(activity.getString(R.string.ask_perrmission), denied), yesButtonConfirmed -> {
+//            if (yesButtonConfirmed) result.goToSettings();
+//        });
     }
 
     private void showPreview(ActivityResult activityResult) {

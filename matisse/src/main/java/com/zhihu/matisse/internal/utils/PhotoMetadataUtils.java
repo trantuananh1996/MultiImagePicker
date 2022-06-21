@@ -130,13 +130,18 @@ public final class PhotoMetadataUtils {
             return new IncapableCause(context.getString(R.string.error_file_type));
         }
 
-        if (item.isVideo() && item.duration > SelectionSpec.getInstance().maxDuration ){
-            DateTimeFormatter  dateTimeFormatter = DateTimeFormatter.ofPattern("mm ")
-            return new IncapableCause(context.getString(R.string.error_video_duration));
+        SelectionSpec selectionSpec = SelectionSpec.getInstance();
+
+        if (item.isVideo() && selectionSpec.maxDuration > 0 && item.duration > (selectionSpec.maxDuration * 1000)) {
+            int minute = (int) (selectionSpec.maxDuration / 60);
+            int second = (int) (selectionSpec.maxDuration % 60);
+
+            String msg = String.format(context.getString(R.string.error_video_duration), minute, second);
+            return new IncapableCause(msg);
         }
 
         if (SelectionSpec.getInstance().filters != null) {
-            for (Filter filter : SelectionSpec.getInstance().filters) {
+            for (Filter filter : selectionSpec.filters) {
                 IncapableCause incapableCause = filter.filter(context, item);
                 if (incapableCause != null) {
                     return incapableCause;
