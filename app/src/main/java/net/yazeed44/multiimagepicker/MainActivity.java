@@ -26,7 +26,6 @@ import com.bumptech.glide.Glide;
 
 
 import net.yazeed44.imagepicker.Matisse;
-import net.yazeed44.imagepicker.data.model.ImageEntry;
 import net.yazeed44.imagepicker.sample.BuildConfig;
 import net.yazeed44.imagepicker.sample.R;
 import net.yazeed44.imagepicker.util.Picker;
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Sample activity";
     private RecyclerView mImageSampleRecycler;
-    private ArrayList<ImageEntry> mSelectedImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,48 +151,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class ImageSamplesAdapter extends RecyclerView.Adapter<ImageSampleViewHolder> {
-
-
-        @Override
-        public ImageSampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final ImageView imageView = new ImageView(parent.getContext());
-            return new ImageSampleViewHolder(imageView);
-        }
-
-        @Override
-        public void onBindViewHolder(ImageSampleViewHolder holder, int position) {
-            final String path = mSelectedImages.get(position).getPath();
-            loadImage(path, holder.thumbnail);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mSelectedImages.size();
-        }
-
-
-        private void loadImage(final String path, final ImageView imageView) {
-            imageView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 440));
-
-            Glide.with(MainActivity.this)
-                    .asBitmap()
-                    .load(path)
-                    .into(imageView);
-
-
-        }
-
-
-    }
-
-    class ImageSampleViewHolder extends RecyclerView.ViewHolder {
-
-        protected ImageView thumbnail;
-
-        public ImageSampleViewHolder(View itemView) {
-            super(itemView);
-            thumbnail = (ImageView) itemView;
-        }
-    }
 }

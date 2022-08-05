@@ -20,8 +20,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.blankj.utilcode.util.ConvertUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 import net.yazeed44.imagepicker.engine.ImageEngine;
@@ -40,7 +43,8 @@ public class GlideEngine implements ImageEngine {
                 .apply(new RequestOptions()
                         .override(resize, resize)
                         .placeholder(placeholder)
-                        .centerCrop())
+                        .transform(new CenterCrop(), new RoundedCorners(ConvertUtils.dp2px(8)))
+                )
                 .into(imageView);
     }
 
@@ -53,7 +57,8 @@ public class GlideEngine implements ImageEngine {
                 .apply(new RequestOptions()
                         .override(resize, resize)
                         .placeholder(placeholder)
-                        .centerCrop())
+                        .transform(new CenterCrop(), new RoundedCorners(ConvertUtils.dp2px(8)))
+                )
                 .into(imageView);
     }
 

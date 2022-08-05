@@ -337,7 +337,7 @@ public final class SelectionCreator {
         return this;
     }
 
-    public SelectionCreator maxVideoLength(long second) {
+    public SelectionCreator maxVideoDuration(long second) {
         mSelectionSpec.maxDuration = second;
         return this;
     }

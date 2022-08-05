@@ -24,7 +24,6 @@ import net.yazeed44.imagepicker.engine.impl.GlideEngine;
 
 /**
  * Image loader interface. There are predefined {@link GlideEngine}
- * and {@link com.zhihu.matisse.engine.impl.PicassoEngine}.
  */
 @SuppressWarnings("unused")
 public interface ImageEngine {

@@ -57,42 +57,50 @@ public enum MimeType {
     WEBP("image/webp", arraySetOf(
             "webp"
     )),
+    HEIF("image/heif", arraySetOf(
+            "heic",
+            "heif"
+    )),
 
     // ============== videos ==============
     MPEG("video/mpeg", arraySetOf(
             "mpeg",
             "mpg"
     )),
+
     MP4("video/mp4", arraySetOf(
             "mp4",
             "m4v"
     )),
+
     QUICKTIME("video/quicktime", arraySetOf(
             "mov"
     )),
+
     THREEGPP("video/3gpp", arraySetOf(
             "3gp",
             "3gpp"
     )),
+
     THREEGPP2("video/3gpp2", arraySetOf(
             "3g2",
             "3gpp2"
     )),
+
     MKV("video/x-matroska", arraySetOf(
             "mkv"
     )),
+
     WEBM("video/webm", arraySetOf(
             "webm"
     )),
+
     TS("video/mp2ts", arraySetOf(
             "ts"
     )),
+
     AVI("video/avi", arraySetOf(
             "avi"
-    )),
-    HEIF("image/heif", arraySetOf(
-            "heic",
-            "heif"
     ));
 
     private final String mMimeTypeName;

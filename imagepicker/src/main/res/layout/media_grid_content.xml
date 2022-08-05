@@ -26,7 +26,7 @@
         android:id="@+id/v_video_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#806E6E6E"
+        android:background="@drawable/bg_media"
         android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatImageView

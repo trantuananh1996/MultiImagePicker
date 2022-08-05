@@ -16,10 +16,14 @@
 package net.yazeed44.imagepicker.internal.ui.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
-public class SquareFrameLayout extends FrameLayout {
+import androidx.cardview.widget.CardView;
+
+import com.blankj.utilcode.util.ConvertUtils;
+
+public class SquareFrameLayout extends CardView {
 
     public SquareFrameLayout(Context context) {
         super(context);
@@ -32,5 +36,11 @@ public class SquareFrameLayout extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        setRadius(ConvertUtils.dp2px(8));
     }
 }
