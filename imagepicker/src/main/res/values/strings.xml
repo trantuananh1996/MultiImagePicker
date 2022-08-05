@@ -1,47 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-
-    <string name="album_thumbnail">Album Thumbnail</string>
-    <string name="image_thumbnail">Image thumbnail</string>
-    <string name="action_take_photo">Chụp ảnh</string>
-    <string name="all_photos">Tất cả</string>
-    <string name="image_check">Chọn ảnh</string>
-    <string name="albums_title">Album</string>
-    <string name="you_cant_check_more_images">Không thể chọn thêm ảnh</string>
-    <string name="image_position_in_view_pager">% trên $</string>
-    <string name="action_select_all">Chọn tất cả</string>
-    <string name="action_deselect_all">Bỏ chọn tất cả</string>
-    <string name="video_too_long">Video quá dài. Video có chỉ được dài tối đa %s giây</string>
-    <string name="image_video_icon_desc">Indicates this thumbnail as video</string>
-    <string name="dialog_choose_camera_title">Chọn máy ảnh</string>
-    <string name="dialog_choose_camera_item_0">Chụp ảnh</string>
-    <string name="dialog_choose_camera_item_1">Quay phim</string>
-    <string name="can_choose_d_image">Chỉ được chọn %d ảnh</string>
-    <string name="cwac_cam2_ok">OK</string>
-    <string name="cwac_cam2_retry">Thử lại</string>
-
-
-    <string name="picture">Ảnh</string>
-    <string name="all_image">Tất cả</string>
-    <string name="take_picture">Chụp ảnh</string>
-    <string name="preview">Xem trước</string>
-    <string name="preview_num">Xem trước (%1$d)</string>
-    <string name="choose">Chọn</string>
-    <string name="done">Xong</string>
-    <string name="use">OK</string>
-    <string name="num_postfix">%1$s</string>
-    <string name="done_num">Xong (%1$d/%2$d)</string>
-    <string name="message_max_num">Có thể chọn tới %1$d ảnh</string>
-    <string name="save_ing">Đang lưu ảnh…</string>
-    <string name="video">Video</string>
-    <string name="all_videos">Tất cả video</string>
-    <string name="take_video">Quay video</string>
-    <string name="add_description">Thêm mô tả</string>
+    <string name="album_name_all">All Media</string>
+    <string name="button_preview">Preview</string>
+    <string name="button_apply_default">Apply</string>
+    <string name="button_apply">Apply(%1$d)</string>
+    <string name="button_back">Back</string>
+    <string name="photo_grid_capture">Camera</string>
+    <string name="empty_text">No media yet</string>
+    <string name="button_ok">OK</string>
+    <string name="error_over_count_default">You have reached max selectable</string>
+    <string name="error_over_count">You can only select up to %1$d media files</string>
+    <string name="error_under_quality">Under quality</string>
+    <string name="error_over_quality">Over quality</string>
+    <string name="error_file_type">Unsupported file type</string>
+    <string name="error_type_conflict">Can\'t select images and videos at the same time</string>
+    <string name="error_no_video_activity">No App found supporting video preview</string>
+    <string name="error_over_original_size">Can\'t select the images larger than %1$d MB</string>
+    <string name="error_over_original_count">%1$d images over %2$d MB. Original will be unchecked</string>
+    <string name="button_original">Original</string>
+    <string name="button_sure_default">Sure</string>
+    <string name="button_sure">Sure(%1$d)</string>
+    <string name="error_video_duration">Video được chọn quá dài. Video có độ dài tối đa được chọn là %d:%02d phút</string>
     <string name="ask_perrmission">Application needs following permissions to work normally: %s. Allow application to use those permissions?</string>
-    <string name="you_picked_max_photo">Bạn đã chọn tối đa số ảnh cho phép</string>
-    <string name="can_choose_d_video">Chỉ được chọn %d video</string>
-    <string name="you_cant_check_more_media">Bạn không thể chọn thêm media</string>
-    <string name="limt_size_file">File của bạn vượt quá %s</string>
-
+    <string name="you_picked_max_photo" />
 </resources>

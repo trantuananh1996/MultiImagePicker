@@ -1,13 +1,8 @@
 package net.yazeed44.multiimagepicker;
 
-
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -19,21 +14,30 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 
-import net.yazeed44.imagepicker.data.model.ImageEntry;
+
+import net.yazeed44.imagepicker.Matisse;
+import net.yazeed44.imagepicker.sample.BuildConfig;
 import net.yazeed44.imagepicker.sample.R;
 import net.yazeed44.imagepicker.util.Picker;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements Picker.PickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Sample activity";
     private RecyclerView mImageSampleRecycler;
-    private ArrayList<ImageEntry> mSelectedImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
         setContentView(R.layout.activity_main);
 
 
-        mImageSampleRecycler = (RecyclerView) findViewById(R.id.images_sample);
+        mImageSampleRecycler = findViewById(R.id.images_sample);
         setupRecycler();
 
 
@@ -56,38 +60,56 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
     }
 
+    private final ActivityResultLauncher<Intent> resultLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getData() == null) return;
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Log.d("Trungnk", "1: ");
+                } else {
+                    Log.d("Trungnk", "2: ");
+                }
+
+
+                List<String> paths = Matisse.obtainPathResult(result.getData());
+//                mSelectedImages = images;
+//                setupImageSamples();
+            });
+
 
     public void onClickPickImageSingle(View view) {
-        Picker picker = new Picker.Builder(this, this)
-                .setLimitVideo(5)
-                .setLimitPhoto(5)
-                .setVideosEnabled(true)
+        Picker picker = new Picker.Builder(this)
+                .limitPhoto(5)
+                .limitVideo(5)
+                .canCapture(true)
+                .fileProvider(BuildConfig.APPLICATION_ID + ".fileprovider")
+                .resultLauncher(resultLauncher)
                 .build();
         picker.startActivity();
     }
 
     public void onClickPickImageMultipleWithLimit(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .setLimit(6)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .setLimit(6)
+//                .build()
+//                .startActivity();
+//    }
     }
 
     public void onPickImageMultipleInfinite(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .build()
+//                .startActivity();
 
     }
 
     public void onClickPickImageWithVideos(View view) {
-        new Picker.Builder(this, this, R.style.MIP_theme)
-                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
-                .setVideosEnabled(true)
-                .build()
-                .startActivity();
+//        new Picker.Builder(this, this, R.style.MIP_theme)
+//                .setPickMode(Picker.PickMode.MULTIPLE_IMAGES)
+//                .setVideosEnabled(true)
+//                .build()
+//                .startActivity();
 
     }
 
@@ -129,69 +151,4 @@ public class MainActivity extends AppCompatActivity implements Picker.PickListen
 
     }
 
-
-    @Override
-    public void onPickedSuccessfully(ArrayList<ImageEntry> images) {
-        mSelectedImages = images;
-        setupImageSamples();
-        Log.d(TAG, "Picked images  " + images.toString());
-    }
-
-    private void setupImageSamples() {
-        mImageSampleRecycler.setAdapter(new ImageSamplesAdapter());
-    }
-
-    @Override
-    public void onCancel() {
-        Log.i(TAG, "User canceled picker activity");
-        Toast.makeText(this, "User canceld picker activtiy", Toast.LENGTH_SHORT).show();
-
-    }
-
-
-    private class ImageSamplesAdapter extends RecyclerView.Adapter<ImageSampleViewHolder> {
-
-
-        @Override
-        public ImageSampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            final ImageView imageView = new ImageView(parent.getContext());
-            return new ImageSampleViewHolder(imageView);
-        }
-
-        @Override
-        public void onBindViewHolder(ImageSampleViewHolder holder, int position) {
-
-            final String path = mSelectedImages.get(position).path;
-            loadImage(path, holder.thumbnail);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mSelectedImages.size();
-        }
-
-
-        private void loadImage(final String path, final ImageView imageView) {
-            imageView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 440));
-
-            Glide.with(MainActivity.this)
-                    .asBitmap()
-                    .load(path)
-                    .into(imageView);
-
-
-        }
-
-
-    }
-
-    class ImageSampleViewHolder extends RecyclerView.ViewHolder {
-
-        protected ImageView thumbnail;
-
-        public ImageSampleViewHolder(View itemView) {
-            super(itemView);
-            thumbnail = (ImageView) itemView;
-        }
-    }
 }
