@@ -21,4 +21,6 @@
     <string name="error_under_quality">Chất lượng thấp</string>
     <string name="photo_grid_capture">Camera</string>
     <string name="error_video_duration">Video được chọn quá dài. Video có độ dài tối đa được chọn là %d:%02d phút</string>
+    <string name="ask_perrmission">Ứng dụng cần các quyền sau để hoạt động bình thường: %s. Bạn cho phép ứng dụng sửa dụng quyền này?</string>
+    <string name="you_picked_max_photo">Bạn chỉ được chọn tối đa %d ảnh</string>
 </resources>

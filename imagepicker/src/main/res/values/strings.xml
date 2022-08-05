@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="album_name_all">All Media</string>
-    <string name="button_preview">Preview</string>
+    <string name="error_over_original_size">Cannot select images larger than %1$d MB</string>
+    <string name="album_name_all">All</string>
+    <string name="button_apply">Confirm(%1$d)</string>
     <string name="button_apply_default">Apply</string>
-    <string name="button_apply">Apply(%1$d)</string>
     <string name="button_back">Back</string>
-    <string name="photo_grid_capture">Camera</string>
-    <string name="empty_text">No media yet</string>
     <string name="button_ok">OK</string>
-    <string name="error_over_count_default">You have reached max selectable</string>
-    <string name="error_over_count">You can only select up to %1$d media files</string>
-    <string name="error_under_quality">Under quality</string>
-    <string name="error_over_quality">Over quality</string>
-    <string name="error_file_type">Unsupported file type</string>
-    <string name="error_type_conflict">Can\'t select images and videos at the same time</string>
-    <string name="error_no_video_activity">No App found supporting video preview</string>
-    <string name="error_over_original_size">Can\'t select the images larger than %1$d MB</string>
-    <string name="error_over_original_count">%1$d images over %2$d MB. Original will be unchecked</string>
     <string name="button_original">Original</string>
-    <string name="button_sure_default">Sure</string>
+    <string name="button_preview">Preview</string>
     <string name="button_sure">Sure(%1$d)</string>
-    <string name="error_video_duration">Video được chọn quá dài. Video có độ dài tối đa được chọn là %d:%02d phút</string>
+    <string name="button_sure_default">Sure</string>
+    <string name="empty_text">No media yet</string>
+    <string name="error_file_type">This file type is not supported</string>
+    <string name="error_no_video_activity">No app found that supports video preview</string>
+    <string name="error_over_count">You can only select up to %1$d files</string>
+    <string name="error_over_count_default">You have reached the maximum selectable level</string>
+    <string name="error_over_original_count">%1$d images over %2$d MB. Original will be unchecked</string>
+    <string name="error_over_quality">Quality is too high</string>
+    <string name="error_type_conflict">Cannot select image and video at the same time</string>
+    <string name="error_under_quality">Low quality</string>
+    <string name="photo_grid_capture">Camera</string>
+    <string name="error_video_duration">The selected video is too long. The maximum video length selected is %d:%02d minutes</string>
     <string name="ask_perrmission">Application needs following permissions to work normally: %s. Allow application to use those permissions?</string>
-    <string name="you_picked_max_photo" />
+    <string name="you_picked_max_photo" >You can only select up to %d photos</string>
 </resources>

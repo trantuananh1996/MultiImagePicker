@@ -60,7 +60,7 @@ public class Picker {
 
     public void startActivity() {
         if (limitPhoto <= 0 && limitVideo <= 0) {
-            ToastUtils.showToastWarning(activityWeakReference.get(), R.string.you_picked_max_photo);
+            ToastUtils.showToastWarning(activityWeakReference.get(), String.format(activityWeakReference.get().getString(R.string.you_picked_max_photo), limitPhoto));
             return;
         }
         if (activityWeakReference.get() != null) {

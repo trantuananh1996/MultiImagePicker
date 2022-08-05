@@ -1,54 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="album_thumbnail">ຮູບຕົວຢ່າງອະລະບ້ຳ</string>
-    <string name="image_thumbnail">ຮູບຕົວຢ່າງ</string>
-    <string name="action_take_photo">ຖ່າຍຮູບ</string>
-    <string name="all_photos">ທຸກ</string>
-    <string name="image_check">ເລືອກຮູບ</string>
-    <string name="albums_title">ສະມຸດພາບ</string>
-    <string name="you_cant_check_more_images">ບໍ່ສາມາດເລືອກຮູບເພີ່ມເຕີມໄດ້</string>
-    <string name="image_position_in_view_pager">% ຂ້າງເທິງ $</string>
-    <string name="action_select_all">ເລືອກທັງຫມົດ</string>
-    <string name="action_deselect_all">ຍົກເລີກການເລືອກທັງໝົດ</string>
-    <string name="video_too_long">ວິດີໂອຍາວເກີນໄປ.ວິດີໂອສາມາດຍາວເຖິງ %s ວິນາທີເທົ່ານັ້ນ</string>
-    <string name="image_video_icon_desc">ຊີ້ບອກຮູບຫຍໍ້ນີ້ເປັນວິດີໂອ</string>
-    <string name="dialog_choose_camera_title">ເລືອກກ້ອງຖ່າຍຮູບ</string>
-    <string name="dialog_choose_camera_item_0">ຖ່າຍຮູບ</string>
-    <string name="dialog_choose_camera_item_1">ຮູບເງົາ</string>
-    <string name="can_choose_d_image">ສາມາດເລືອກໄດ້ພຽງແຕ່ %d ຮູບເທົ່ານັ້ນ</string>
-    <string name="cwac_cam2_ok">ຖືກແລ້ວ</string>
-    <string name="cwac_cam2_retry">ລອງໃຫມ່</string>
-    <string name="picture">ຮູບ</string>
-    <string name="all_image">ທຸກ</string>
-    <string name="take_picture">ຖ່າຍຮູບ</string>
-    <string name="preview">ການເຫັນກ່ອນການສະແດງ</string>
-    <string name="preview_num">ການເຫັນກ່ອນການສະແດງ (%1$d)</string>
-    <string name="choose">ເລືອກ</string>
-    <string name="done">ສໍາເລັດ</string>
-    <string name="use">ຖືກແລ້ວ</string>
-    <string name="num_postfix">%1$s</string>
-    <string name="done_num">ສໍາເລັດ (%1$d/%2$d)</string>
-    <string name="message_max_num">ສາມາດເລືອກໄດ້ສູງສຸດ %1d ຮູບ</string>
-    <string name="save_ing">ກຳລັງບັນທຶກຮູບ…</string>
-    <string name="video">ວິດີໂອ</string>
-    <string name="all_videos">ວິດີໂອທັງໝົດ</string>
-    <string name="take_video">ວິດີໂອ</string>
-    <string name="add_description">ເພີ່ມຄໍາອະທິບາຍ</string>
-
-
-    <string name="ucrop_label_original">ກົກເຄົ້າ</string>
-    <string name="ucrop_label_edit_photo">ແກ້ໄຂຮູບພາບ</string>
-
-    <string name="ucrop_menu_crop">ຕັດ</string>
-
-    <string name="ucrop_error_input_data_is_absent">ຈະຕ້ອງລະບຸທັງອິນພຸດ ແລະຜົນຜະລິດ Uri</string>
-    <string name="ucrop_mutate_exception_hint">ດັ່ງນັ້ນ, ແທນທີ່ຊັບພະຍາກອນສີ (ucrop_color_toolbar_widget) ໃນແອັບຯຂອງທ່ານເພື່ອເຮັດໃຫ້ມັນເຮັດວຽກຢູ່ໃນອຸປະກອນກ່ອນ L.</string>
-    <string name="ucrop_rotate">ຫັນ</string>
-    <string name="ucrop_scale">ຊູມ</string>
-    <string name="ucrop_crop">ຕັດ</string>
-    <string name="ask_perrmission">ແອັບຕ້ອງການການອະນຸຍາດຕໍ່ໄປນີ້ເພື່ອເຮັດວຽກໄດ້ຢ່າງຖືກຕ້ອງ:\n%s.\nຕົກລົງໃຫ້ການອະນຸຍາດແອັບບໍ?</string>
-    <string name="can_choose_d_video">ສາມາດເລືອກໄດ້ພຽງແຕ່ %d ວິດີໂອເທົ່ານັ້ນ</string>
-    <string name="you_picked_max_photo">ທ່ານໄດ້ເລືອກຈໍານວນສູງສຸດຂອງຮູບພາບທີ່ອະນຸຍາດໃຫ້</string>
-    <string name="you_cant_check_more_media">ທ່ານບໍ່ສາມາດເລືອກສື່ເພີ່ມເຕີມໄດ້</string>
-    <string name="limt_size_file">ໄຟລ໌ຂອງທ່ານເກີນ %s</string>
+    <string name="error_over_original_size">ບໍ່ສາມາດເລືອກຮູບທີ່ໃຫຍ່ກວ່າ %1$d MB ໄດ້</string>
+    <string name="album_name_all">ທັງໝົດ</string>
+    <string name="button_apply">ຢືນຢັນ(%1$d)</string>
+    <string name="button_apply_default">ປະຍຸກ</string>
+    <string name="button_back">ຫລັງ</string>
+    <string name="button_ok">ຖືກແລ້ວ</string>
+    <string name="button_original">ຊຶ່ງມີມາແຕ່ເດີມ</string>
+    <string name="button_preview">ການເຫັນກ່ອນການສະແດງ</string>
+    <string name="button_sure">ແນ່ນອນ(%1$d)</string>
+    <string name="button_sure_default">ແນ່ນອນ</string>
+    <string name="empty_text">ບໍ່ມີສື່ມວນຊົນເທື່ອ</string>
+    <string name="error_file_type">ບໍ່ຮອງຮັບໄຟລ໌ປະເພດນີ້</string>
+    <string name="error_no_video_activity">ບໍ່ພົບແອັບທີ່ຮອງຮັບການເບິ່ງຕົວຢ່າງວິດີໂອ</string>
+    <string name="error_over_count">ທ່ານສາມາດເລືອກໄດ້ສູງສຸດ %1$d ໄຟລ໌ເທົ່ານັ້ນ</string>
+    <string name="error_over_count_default">ທ່ານໄດ້ເຖິງລະດັບສູງສຸດທີ່ເລືອກໄດ້</string>
+    <string name="error_over_original_count">%1d ຮູບພາບຫຼາຍກວ່າ %2$d MB. ຕົ້ນສະບັບຈະບໍ່ຖືກເລືອກ</string>
+    <string name="error_over_quality">ຄຸນນະພາບສູງເກີນໄປ</string>
+    <string name="error_type_conflict">ບໍ່ສາມາດເລືອກຮູບພາບແລະວິດີໂອໃນເວລາດຽວກັນ</string>
+    <string name="error_under_quality">ຄຸນນະພາບຕໍ່າ</string>
+    <string name="photo_grid_capture">ກ້ອງ</string>
+    <string name="error_video_duration">ວິດີໂອທີ່ເລືອກຍາວເກີນໄປ. ຄວາມຍາວວິດີໂອສູງສຸດທີ່ເລືອກແມ່ນ %d:%02d ນາທີ</string>
+    <string name="ask_perrmission">ແອັບພລິເຄຊັນຕ້ອງການການອະນຸຍາດຕໍ່ໄປນີ້ເພື່ອເຮັດວຽກຕາມປົກກະຕິ: %s. ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນໃຊ້ສິດອະນຸຍາດເຫຼົ່ານັ້ນບໍ?</string>
+    <string name="you_picked_max_photo" >ທ່ານສາມາດເລືອກໄດ້ສູງສຸດ %d ຮູບເທົ່ານັ້ນ</string>
 </resources>
