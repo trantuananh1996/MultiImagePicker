@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "MultiImagePicker"
-include ':app', ':imagepicker'
+include ':app', ':mediaPicker'
 //project(':imagepicker').projectDir = new File('imagepicker')
