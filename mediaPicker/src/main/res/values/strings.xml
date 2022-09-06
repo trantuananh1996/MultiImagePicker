@@ -14,7 +14,7 @@
     <string name="error_file_type">This file type is not supported</string>
     <string name="error_no_video_activity">No app found that supports video preview</string>
     <string name="error_over_count">You can only select up to %1$d files</string>
-    <string name="error_over_count_default">You have reached the maximum selectable level</string>
+    <string name="error_over_count_default">You have reached the maximum selectable level</string>
     <string name="error_over_original_count">%1$d images over %2$d MB. Original will be unchecked</string>
     <string name="error_over_quality">Quality is too high</string>
     <string name="error_type_conflict">Cannot select image and video at the same time</string>
@@ -22,5 +22,5 @@
     <string name="photo_grid_capture">Camera</string>
     <string name="error_video_duration">The selected video is too long. The maximum video length selected is %d:%02d minutes</string>
     <string name="ask_perrmission">Application needs following permissions to work normally: %s. Allow application to use those permissions?</string>
-    <string name="you_picked_max_photo" >You can only select up to %d photos</string>
+    <string name="you_picked_max_photo">You can only select up to %d photos</string>
 </resources>
