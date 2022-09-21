@@ -22,5 +22,5 @@
     <string name="photo_grid_capture">ກ້ອງ</string>
     <string name="error_video_duration">ວິດີໂອທີ່ເລືອກຍາວເກີນໄປ. ຄວາມຍາວວິດີໂອສູງສຸດທີ່ເລືອກແມ່ນ %d:%02d ນາທີ</string>
     <string name="ask_perrmission">ແອັບພລິເຄຊັນຕ້ອງການການອະນຸຍາດຕໍ່ໄປນີ້ເພື່ອເຮັດວຽກຕາມປົກກະຕິ: %s. ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນໃຊ້ສິດອະນຸຍາດເຫຼົ່ານັ້ນບໍ?</string>
-    <string name="you_picked_max_photo" >ທ່ານສາມາດເລືອກໄດ້ສູງສຸດ %d ຮູບເທົ່ານັ້ນ</string>
+    <string name="you_picked_max_photo">ທ່ານສາມາດເລືອກໄດ້ສູງສຸດ %d ຮູບເທົ່ານັ້ນ</string>
 </resources>
