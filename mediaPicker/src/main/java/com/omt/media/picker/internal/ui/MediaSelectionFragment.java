@@ -88,7 +88,7 @@ public class MediaSelectionFragment extends Fragment implements
         if (getArguments() == null) return;
         Album album = getArguments().getParcelable(EXTRA_ALBUM);
         mRecyclerView = view.findViewById(R.id.recyclerview);
-        mAdapter = new AlbumMediaAdapter(getActivity(),
+        mAdapter = new AlbumMediaAdapter(requireContext(),
                 mSelectionProvider.provideSelectedItemCollection(), mRecyclerView);
         mAdapter.registerCheckStateListener(this);
         mAdapter.registerOnMediaClickListener(this);

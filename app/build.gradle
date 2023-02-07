@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 30
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.omt.imagepicker.sample"
         minSdk 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 3
         versionName "1.3.1"
         multiDexEnabled true

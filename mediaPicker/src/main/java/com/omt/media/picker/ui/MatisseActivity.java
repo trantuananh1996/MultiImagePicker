@@ -43,6 +43,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.github.florent37.runtimepermission.PermissionResult;
 import com.github.florent37.runtimepermission.RuntimePermission;
 import com.omt.media.picker.R;
@@ -66,11 +67,16 @@ import com.omt.media.picker.internal.utils.MediaStoreCompat;
 import com.omt.media.picker.internal.utils.PathUtils;
 import com.omt.media.picker.internal.utils.PhotoMetadataUtils;
 import com.omt.media.picker.internal.utils.SingleMediaScanner;
+import com.omt.media.picker.util.Picker;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import java8.util.stream.StreamSupport;
 
 /**
  * Main Activity to display albums and media content (images/videos) in each album
@@ -424,8 +430,10 @@ public class MatisseActivity extends AppCompatActivity implements
 
     @Override
     public void capture() {
-        RuntimePermission.askPermission(this, Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .onDenied(this::handleDeniedPermissions)
+        RuntimePermission.askPermission(this, Manifest.permission.CAMERA)
+                .onDenied(result -> {
+                    LogUtils.e(result.toString());
+                })
                 .onAccepted(result -> {
                     try {
                         imageFile = createImageFile();
@@ -438,13 +446,6 @@ public class MatisseActivity extends AppCompatActivity implements
                 })
                 .ask();
 
-    }
-
-    private void handleDeniedPermissions(PermissionResult result) {
-//        StringBuilder denied = getPermissionsString(activity, result, isDenied ? result.getDenied() : result.getForeverDenied());
-//        ToastUtils.alertYesNo(activity, String.format(activity.getString(R.string.ask_perrmission), denied), yesButtonConfirmed -> {
-//            if (yesButtonConfirmed) result.goToSettings();
-//        });
     }
 
     private void showPreview(ActivityResult activityResult) {

@@ -22,8 +22,10 @@ import com.bumptech.glide.Glide;
 
 
 import com.omt.media.picker.Matisse;
+
 import net.yazeed44.imagepicker.sample.BuildConfig;
 import net.yazeed44.imagepicker.sample.R;
+
 import com.omt.media.picker.util.Picker;
 
 import java.util.List;
@@ -72,14 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onClickPickImageSingle(View view) {
-        Picker picker = new Picker.Builder(this)
+        Picker picker = new Picker.Builder()
                 .limitPhoto(5)
                 .limitVideo(5)
                 .canCapture(true)
-                .fileProvider(BuildConfig.APPLICATION_ID + ".fileprovider")
+                .fileProvider("trungnk.com.fileprovider")
                 .resultLauncher(resultLauncher)
                 .build();
-        picker.startActivity();
+        picker.startActivity(this);
     }
 
     public void onClickPickImageMultipleWithLimit(View view) {
