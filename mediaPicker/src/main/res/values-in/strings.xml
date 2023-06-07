@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_over_original_size">Tidak dapat memilih gambar yang lebih besar dari %1$d MB</string>
+    <string name="album_name_all">Semua</string>
+    <string name="button_apply">Konfirmasi(%1$d)</string>
+    <string name="button_apply_default">Berlaku</string>
+    <string name="button_back">Kembali</string>
+    <string name="button_ok">Oke</string>
+    <string name="button_original">Asli</string>
+    <string name="button_preview">Pratinjau</string>
+    <string name="button_sure">Tentu(%1$d)</string>
+    <string name="button_sure_default">Tentu</string>
+    <string name="empty_text">Belum ada media</string>
+    <string name="error_file_type">Jenis file ini tidak didukung</string>
+    <string name="error_no_video_activity">Tidak ditemukan aplikasi yang mendukung pratinjau video</string>
+    <string name="error_over_count">Anda hanya dapat memilih hingga %1$d file</string>
+    <string name="error_over_count_default">Anda telah mencapai level maksimum yang dapat dipilih</string>
+    <string name="error_over_original_count">%1$d foto lebih dari %2$d MB. Asli tidak akan dicentang</string>
+    <string name="error_over_quality">Kualitas terlalu tinggi</string>
+    <string name="error_type_conflict">Tidak dapat memilih foto dan video secara bersamaan</string>
+    <string name="error_under_quality">Kualitas rendah</string>
+    <string name="photo_grid_capture">Kamera</string>
+    <string name="error_video_duration">Video yang dipilih terlalu panjang. Durasi video maksimum yang dipilih adalah %d:%02d menit</string>
+    <string name="ask_perrmission">Aplikasi memerlukan izin berikut untuk bekerja secara normal: %s. Izinkan aplikasi menggunakan izin tersebut?</string>
+    <string name="you_picked_max_photo">Anda hanya dapat memilih hingga %d foto</string>
+</resources>
