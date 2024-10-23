@@ -44,11 +44,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.github.florent37.runtimepermission.PermissionResult;
 import com.github.florent37.runtimepermission.RuntimePermission;
 import com.omt.media.picker.R;
-
-
 import com.omt.media.picker.internal.entity.Album;
 import com.omt.media.picker.internal.entity.Item;
 import com.omt.media.picker.internal.entity.SelectionSpec;
@@ -67,16 +64,10 @@ import com.omt.media.picker.internal.utils.MediaStoreCompat;
 import com.omt.media.picker.internal.utils.PathUtils;
 import com.omt.media.picker.internal.utils.PhotoMetadataUtils;
 import com.omt.media.picker.internal.utils.SingleMediaScanner;
-import com.omt.media.picker.util.Picker;
-
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import java8.util.stream.StreamSupport;
 
 /**
  * Main Activity to display albums and media content (images/videos) in each album
@@ -130,8 +121,19 @@ public class MatisseActivity extends AppCompatActivity implements
 
     private File createImageFile() throws IOException {
         String imageFileName = String.format("JPEG_%s", System.currentTimeMillis());
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
+        try {
+            File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            return File.createTempFile(imageFileName, ".jpg", storageDir);
+        } catch (Exception e) {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), imageFileName + ".jpg");
+            if (file.exists()) {
+                return file;
+            } else {
+                file.createNewFile();
+                return file;
+            }
+        }
+
     }
 
     @Override
@@ -439,6 +441,7 @@ public class MatisseActivity extends AppCompatActivity implements
                         imageFile = createImageFile();
                     } catch (IOException e) {
                         e.printStackTrace();
+
                     }
                     if (mMediaStoreCompat != null && imageFile != null) {
                         mMediaStoreCompat.dispatchCaptureIntent(this, resultLauncherCapture, imageFile);
